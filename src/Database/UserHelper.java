@@ -22,7 +22,6 @@ public class UserHelper {
         ObservableList<User> usersList = FXCollections.observableArrayList();
 
         PreparedStatement statement = JDBC.getConnection().prepareStatement("SELECT * FROM users ");
-
         ResultSet resultSet = statement.executeQuery();
 
         while (resultSet.next()) {
