@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="505.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/17.0.6" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.CustomerHomepage">
+    <children>
+              <Text layoutX="432.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customers">
+                  <font>
+                      <Font size="21.0" />
+                  </font>
+              </Text>
+              <TableView fx:id="customerTable" layoutX="41.0" layoutY="85.0" prefHeight="305.0" prefWidth="878.0">
+                  <columns>
+                      <TableColumn fx:id="customerIdColumn" prefWidth="82.0" text="Customer ID" />
+                      <TableColumn fx:id="customerNameColumn" prefWidth="138.0" text="Customer Name" />
+                      <TableColumn fx:id="customerNumberColumn" prefWidth="133.0" text="Phone Number" />
+                      <TableColumn fx:id="customerAddressColumn" prefWidth="179.0" text="Address" />
+                      <TableColumn fx:id="customerDivisionColumn" prefWidth="99.0" text="State/Province" />
+                      <TableColumn fx:id="customerCountryColumn" prefWidth="144.0" text="Country" />
+                      <TableColumn fx:id="customerPostalCodeColumn" prefWidth="102.0" text="Postal Code" />
+                  </columns>
+              </TableView>
+              <Button fx:id="addCustomerButton" layoutX="87.0" layoutY="430.0" mnemonicParsing="false" onAction="#goToAddCustomer" prefHeight="33.0" prefWidth="180.0" text="Add Customer" />
+              <Button fx:id="editCustomerButton" layoutX="391.0" layoutY="430.0" mnemonicParsing="false" onAction="#goToEditCustomer" prefHeight="33.0" prefWidth="180.0" text="Edit Customer" />
+              <Button fx:id="deleteCustomerButton" layoutX="694.0" layoutY="430.0" mnemonicParsing="false" onAction="#deleteCustomer" prefHeight="33.0" prefWidth="180.0" text="Delete Customer" />
+      <Button fx:id="backButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goToHomepage">
+         <graphic>
+            <ImageView fitHeight="23.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/back-arrow-icon.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+    </children>
+</AnchorPane>
