@@ -12,4 +12,8 @@ public class SalesAppointment extends Appointment {
         this.financingOptions = financingOptions;
     }
 
+    public String getTradeInVehicle() { return tradeInVehicle; }
+
+    public String getFinancingOptions() { return financingOptions; }
+
 }

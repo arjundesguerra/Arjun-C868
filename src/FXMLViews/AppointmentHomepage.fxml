@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="505.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/17.0.6" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AppointmentHomepage">
+<AnchorPane prefHeight="505.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AppointmentHomepage">
      <Text layoutX="418.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Appointments" textAlignment="CENTER">
          <font>
              <Font size="21.0" />
@@ -22,12 +22,12 @@
              <TableColumn fx:id="appointmentTitleColumn" prefWidth="70.0" text="Title" />
              <TableColumn fx:id="appointmentDescriptionColumn" prefWidth="129.0" text="Description" />
              <TableColumn fx:id="appointmentLocationColumn" prefWidth="66.0" text="Location" />
-             <TableColumn fx:id="appointmentTypeColumn" prefWidth="115.0" text="Type" />
-             <TableColumn fx:id="appointmentStartColumn" minWidth="0.0" prefWidth="126.0" text="Start Timestamp" />
-             <TableColumn fx:id="appointmentEndColumn" prefWidth="126.0" text="End Timestamp" />
-             <TableColumn fx:id="appointmentCustomerID" prefWidth="75.0" text="Customer ID" />
-             <TableColumn fx:id="appointmentUserID" minWidth="0.0" prefWidth="52.0" text="User ID" />
-             <TableColumn fx:id="appointmentContactID" prefWidth="68.0" text="Contact ID" />
+             <TableColumn fx:id="appointmentTypeColumn" prefWidth="130.0" text="Type" />
+             <TableColumn fx:id="appointmentStartColumn" minWidth="0.0" prefWidth="134.0" text="Start Timestamp" />
+             <TableColumn fx:id="appointmentEndColumn" prefWidth="134.0" text="End Timestamp" />
+             <TableColumn fx:id="appointmentCustomerID" prefWidth="66.0" text="Customer &#10;        ID" />
+             <TableColumn fx:id="appointmentUserID" minWidth="0.0" prefWidth="46.0" text="User&#10;   ID" />
+             <TableColumn fx:id="appointmentContactID" prefWidth="53.0" text="Contact&#10;      ID" />
          </columns>
      </TableView>
      <Button fx:id="addAppointmentButton" layoutX="87.0" layoutY="430.0" mnemonicParsing="false" onAction="#goToAddAppointment" prefHeight="33.0" prefWidth="180.0" text="Add Appointment" />

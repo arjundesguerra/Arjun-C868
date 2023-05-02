@@ -53,3 +53,10 @@
 [2023-05-01 11:55:26] Login attempt by user '': Failure
 [2023-05-01 11:55:29] Login attempt by user '': Failure
 [2023-05-01 11:55:39] Login attempt by user 'admin': Success
+[2023-05-02 02:04:03] Login attempt by user 'tes': Failure
+[2023-05-02 02:04:04] Login attempt by user 'tes': Failure
+[2023-05-02 02:04:06] Login attempt by user 'tes': Failure
+[2023-05-02 02:04:07] Login attempt by user 'tes': Failure
+[2023-05-02 02:04:12] Login attempt by user 'test': Success
+[2023-05-02 02:07:06] Login attempt by user 'test': Success
+[2023-05-02 02:10:51] Login attempt by user 'test': Success

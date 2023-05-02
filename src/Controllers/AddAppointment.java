@@ -28,6 +28,12 @@ import java.util.List;
  * The AddAppointment class manages the functionality for adding a new appointment to the database.
  */
 public class AddAppointment {
+
+    @FXML
+    private RadioButton salesRadioButton;
+    @FXML
+    private RadioButton serviceRadioButton;
+    private ToggleGroup appointmentTypeGroup;
     @FXML
     private ComboBox customerComboBox;
     @FXML
@@ -63,6 +69,10 @@ public class AddAppointment {
 
         setComboBoxes();
         setTimeComboBoxes();
+
+        appointmentTypeGroup = new ToggleGroup();
+        salesRadioButton.setToggleGroup(appointmentTypeGroup);
+        serviceRadioButton.setToggleGroup(appointmentTypeGroup);
     }
 
     /**
@@ -124,7 +134,7 @@ public class AddAppointment {
 
         if (customerComboBox.getValue() == null || userComboBox.getValue() == null || contactComboBox.getValue() == null ||
                 titleTextField.getText().isEmpty() || descriptionTextField.getText().isEmpty() || locationTextField.getText().isEmpty() ||
-                typeTextField.getText().isEmpty() || datePicker.getValue() == null || startTimeComboBox.getValue() == null || endTimeComboBox.getValue() == null) {
+                appointmentTypeGroup.getSelectedToggle() == null || datePicker.getValue() == null || startTimeComboBox.getValue() == null || endTimeComboBox.getValue() == null) {
 
             // display error message if any fields are empty
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -135,6 +145,8 @@ public class AddAppointment {
             return;
         }
 
+        String type = null;
+
         int appointmentID = AppointmentHelper.maxID();
         int customerID = CustomerHelper.getCustomerIDByName(customerName);
         int userID = UserHelper.getUserIDByName(userName);
@@ -142,10 +154,15 @@ public class AddAppointment {
         String title = titleTextField.getText();
         String description = descriptionTextField.getText();
         String location = locationTextField.getText();
-        String type = typeTextField.getText();
         LocalDate date = datePicker.getValue();
         String startTime = (String) startTimeComboBox.getValue();
         String endTime = (String) endTimeComboBox.getValue();
+
+        if (salesRadioButton.isSelected()) {
+            type = "Sales Appointment";
+        } else if (serviceRadioButton.isSelected()) {
+            type = "Service Appointment";
+        }
 
         // turns time strings to date time objects
         LocalDateTime startDateTime = LocalDateTime.parse(date.toString() + " " + startTime + ":00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
