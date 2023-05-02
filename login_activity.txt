@@ -60,3 +60,11 @@
 [2023-05-02 02:04:12] Login attempt by user 'test': Success
 [2023-05-02 02:07:06] Login attempt by user 'test': Success
 [2023-05-02 02:10:51] Login attempt by user 'test': Success
+[2023-05-02 04:06:09] Login attempt by user '': Failure
+[2023-05-02 04:06:10] Login attempt by user '': Failure
+[2023-05-02 04:06:12] Login attempt by user 'test': Success
+[2023-05-02 04:08:43] Login attempt by user 'test': Failure
+[2023-05-02 04:08:45] Login attempt by user 'test': Success
+[2023-05-02 04:09:57] Login attempt by user 'test': Failure
+[2023-05-02 04:10:00] Login attempt by user 'test': Success
+[2023-05-02 04:19:43] Login attempt by user 'test': Success

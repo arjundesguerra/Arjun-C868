@@ -15,6 +15,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -49,6 +50,14 @@ public class AddAppointment {
     @FXML
     private TextField typeTextField;
     @FXML
+    private Text tradeInVehicleText;
+    @FXML
+    private TextField tradeInVehicleTextField;
+    @FXML
+    private Text financingOptionsText;
+    @FXML
+    private TextField financingOptionsTextField;
+    @FXML
     private DatePicker datePicker;
     @FXML
     private ComboBox startTimeComboBox;
@@ -73,6 +82,8 @@ public class AddAppointment {
         appointmentTypeGroup = new ToggleGroup();
         salesRadioButton.setToggleGroup(appointmentTypeGroup);
         serviceRadioButton.setToggleGroup(appointmentTypeGroup);
+
+        salesRadioButton.setSelected(true);
     }
 
     /**
@@ -146,7 +157,6 @@ public class AddAppointment {
         }
 
         String type = null;
-
         int appointmentID = AppointmentHelper.maxID();
         int customerID = CustomerHelper.getCustomerIDByName(customerName);
         int userID = UserHelper.getUserIDByName(userName);
