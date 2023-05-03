@@ -1,6 +1,8 @@
 package Controllers;
 
 import Database.AppointmentHelper;
+import Database.SalesAppointmentHelper;
+import Database.ServiceAppointmentHelper;
 import Models.Appointment;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -139,15 +141,29 @@ public class AppointmentHomepage {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this appointment?", ButtonType.YES, ButtonType.NO);
             alert.showAndWait();
             if (alert.getResult() == ButtonType.YES) {
-                int deletedAppointmentID = selectedAppointment.getAppointmentID();
                 String deletedAppointmentType = selectedAppointment.getAppointmentType();
-                AppointmentHelper.deleteAppointment(deletedAppointmentID);
-                appointmentTable.setItems(AppointmentHelper.fetchAppointments());
-                Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "Appointment ID: " + deletedAppointmentID + " with Appointment Type: " + deletedAppointmentType + "\nhas been deleted successfully.", ButtonType.OK);
-                successAlert.showAndWait();
+                // Delete service appointment
+                if (deletedAppointmentType.equals("Service Appointment")) {
+                    int appointmentID = selectedAppointment.getAppointmentID();
+                    ServiceAppointmentHelper.deleteAppointment(appointmentID);
+                    AppointmentHelper.deleteAppointment(appointmentID);
+                    appointmentTable.setItems(AppointmentHelper.fetchAppointments());
+                    Alert serviceSuccessAlert = new Alert(Alert.AlertType.INFORMATION, "Service appointment with ID: " + appointmentID + " has been deleted successfully.", ButtonType.OK);
+                    serviceSuccessAlert.showAndWait();
+
+                    // Delete sales appointment
+                } else if (deletedAppointmentType.equals("Sales Appointment")) {
+                    int appointmentID = selectedAppointment.getAppointmentID();
+                    SalesAppointmentHelper.deleteAppointment(appointmentID);
+                    AppointmentHelper.deleteAppointment(appointmentID);
+                    appointmentTable.setItems(AppointmentHelper.fetchAppointments());
+                    Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "Sales appointment with ID: " + appointmentID + " has been deleted successfully.", ButtonType.OK);
+                    successAlert.showAndWait();
+                }
             }
         }
     }
+
 
     /**
      * Sets the appointment table to display all appointments.

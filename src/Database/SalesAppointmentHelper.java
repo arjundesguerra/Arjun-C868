@@ -26,4 +26,12 @@ public class SalesAppointmentHelper {
         statement.execute();
 
     }
+
+    public static void deleteAppointment(int appointmentID) throws SQLException {
+        String sqlDC = "DELETE from sales_appointments WHERE Appointment_ID = ?";
+        try (PreparedStatement psDC = JDBC.getConnection().prepareStatement(sqlDC)) {
+            psDC.setInt(1, appointmentID);
+            psDC.execute();
+        }
+    }
 }
