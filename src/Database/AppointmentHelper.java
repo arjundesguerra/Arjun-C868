@@ -233,6 +233,7 @@ public class AppointmentHelper {
 
     }
 
+
     /**
      * Edits an existing appointment in the database.
      *

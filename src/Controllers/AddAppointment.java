@@ -1,9 +1,6 @@
 package Controllers;
 
-import Database.AppointmentHelper;
-import Database.ContactHelper;
-import Database.CustomerHelper;
-import Database.UserHelper;
+import Database.*;
 import Models.Contact;
 import Models.Customer;
 import Models.User;
@@ -48,15 +45,13 @@ public class AddAppointment {
     @FXML
     private TextField locationTextField;
     @FXML
-    private TextField typeTextField;
+    private Text vehicleOrCostText;
     @FXML
-    private Text tradeInVehicleText;
+    private TextField vehicleOrCostTextField;
     @FXML
-    private TextField tradeInVehicleTextField;
+    private Text financingOrTypeText;
     @FXML
-    private Text financingOptionsText;
-    @FXML
-    private TextField financingOptionsTextField;
+    private ComboBox financingOrTypeComboBox;
     @FXML
     private DatePicker datePicker;
     @FXML
@@ -83,7 +78,13 @@ public class AddAppointment {
         salesRadioButton.setToggleGroup(appointmentTypeGroup);
         serviceRadioButton.setToggleGroup(appointmentTypeGroup);
 
+        salesRadioButton.setOnAction(event -> setToSales());
+        serviceRadioButton.setOnAction(event -> setToService());
+
         salesRadioButton.setSelected(true);
+        ObservableList<String> options = FXCollections.observableArrayList("Cash", "Lease", "Loan");
+        financingOrTypeComboBox.setItems(options);
+
     }
 
     /**
@@ -130,6 +131,20 @@ public class AddAppointment {
         endTimeComboBox.setItems(timeObservableList);
     }
 
+    public void setToSales() {
+        vehicleOrCostText.setText("Vehicle:");
+        financingOrTypeText.setText("Financing Option:");
+        ObservableList<String> options = FXCollections.observableArrayList("Cash", "Lease", "Loan");
+        financingOrTypeComboBox.setItems(options);
+    }
+
+    public void setToService() {
+        vehicleOrCostText.setText("Service Cost:");
+        financingOrTypeText.setText("Service Type:");
+        ObservableList<String> options = FXCollections.observableArrayList("Oil Change", "Tire Rotation", "Alignment");
+        financingOrTypeComboBox.setItems(options);
+    }
+
     /**
      * Validates and submits a new appointment to the database.
      * Returns to Appointment Homepage after successful submission.
@@ -143,9 +158,9 @@ public class AddAppointment {
         String userName = (String) userComboBox.getValue();
         String contactName = (String) contactComboBox.getValue();
 
-        if (customerComboBox.getValue() == null || userComboBox.getValue() == null || contactComboBox.getValue() == null ||
+        if (appointmentTypeGroup.getSelectedToggle() == null || customerComboBox.getValue() == null || userComboBox.getValue() == null || contactComboBox.getValue() == null ||
                 titleTextField.getText().isEmpty() || descriptionTextField.getText().isEmpty() || locationTextField.getText().isEmpty() ||
-                appointmentTypeGroup.getSelectedToggle() == null || datePicker.getValue() == null || startTimeComboBox.getValue() == null || endTimeComboBox.getValue() == null) {
+                vehicleOrCostTextField.getText() == null || financingOrTypeComboBox.getValue() == null || datePicker.getValue() == null || startTimeComboBox.getValue() == null || endTimeComboBox.getValue() == null) {
 
             // display error message if any fields are empty
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -157,6 +172,9 @@ public class AddAppointment {
         }
 
         String type = null;
+        String vehicleOrCostText = vehicleOrCostTextField.getText();
+        String financingOrTypeText = (String) financingOrTypeComboBox.getValue();
+
         int appointmentID = AppointmentHelper.maxID();
         int customerID = CustomerHelper.getCustomerIDByName(customerName);
         int userID = UserHelper.getUserIDByName(userName);
@@ -167,12 +185,6 @@ public class AddAppointment {
         LocalDate date = datePicker.getValue();
         String startTime = (String) startTimeComboBox.getValue();
         String endTime = (String) endTimeComboBox.getValue();
-
-        if (salesRadioButton.isSelected()) {
-            type = "Sales Appointment";
-        } else if (serviceRadioButton.isSelected()) {
-            type = "Service Appointment";
-        }
 
         // turns time strings to date time objects
         LocalDateTime startDateTime = LocalDateTime.parse(date.toString() + " " + startTime + ":00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
@@ -231,6 +243,14 @@ public class AddAppointment {
             alert.setContentText("Appointments can only be scheduled between 8AM and 10PM EST.");
             alert.showAndWait();
             return;
+        }
+
+        if (salesRadioButton.isSelected()) {
+            type = "Sales Appointment";
+            SalesAppointmentHelper.createSalesAppointment(appointmentID, title, description, location, type, financingOrTypeText, vehicleOrCostText, startDateTime, endDateTime, customerID, userID, contactID);
+        } else if (serviceRadioButton.isSelected()) {
+            type = "Service Appointment";
+            ServiceAppointmentHelper.createServiceAppointment(appointmentID, title, description, location, type, Double.parseDouble(vehicleOrCostText), financingOrTypeText, startDateTime, endDateTime, customerID, userID, contactID);
         }
 
         AppointmentHelper.createAppointment(appointmentID, title, description, location, type, startDateTime, endDateTime, customerID, userID, contactID);
