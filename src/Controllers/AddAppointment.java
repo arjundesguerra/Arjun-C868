@@ -136,6 +136,7 @@ public class AddAppointment {
         financingOrTypeText.setText("Financing Option:");
         ObservableList<String> options = FXCollections.observableArrayList("Cash", "Lease", "Loan");
         financingOrTypeComboBox.setItems(options);
+        vehicleOrCostTextField.setText("");
     }
 
     public void setToService() {
@@ -143,6 +144,7 @@ public class AddAppointment {
         financingOrTypeText.setText("Service Type:");
         ObservableList<String> options = FXCollections.observableArrayList("Oil Change", "Tire Rotation", "Alignment");
         financingOrTypeComboBox.setItems(options);
+        vehicleOrCostTextField.setText("");
     }
 
     /**
@@ -247,13 +249,24 @@ public class AddAppointment {
 
         if (salesRadioButton.isSelected()) {
             type = "Sales Appointment";
-            SalesAppointmentHelper.createSalesAppointment(appointmentID, title, description, location, type, financingOrTypeText, vehicleOrCostText, startDateTime, endDateTime, customerID, userID, contactID);
+            AppointmentHelper.createAppointment(appointmentID, title, description, location, type, startDateTime, endDateTime, customerID, userID, contactID);
+            SalesAppointmentHelper.createSalesAppointment(appointmentID, title, description, location, vehicleOrCostText, financingOrTypeText, startDateTime, endDateTime, customerID, userID, contactID);
         } else if (serviceRadioButton.isSelected()) {
+            try {
+                Double.parseDouble(vehicleOrCostText);
+            } catch (NumberFormatException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Please input a valid price.");
+                alert.showAndWait();
+                return;
+            }
             type = "Service Appointment";
-            ServiceAppointmentHelper.createServiceAppointment(appointmentID, title, description, location, type, Double.parseDouble(vehicleOrCostText), financingOrTypeText, startDateTime, endDateTime, customerID, userID, contactID);
+            AppointmentHelper.createAppointment(appointmentID, title, description, location, type, startDateTime, endDateTime, customerID, userID, contactID);
+            ServiceAppointmentHelper.createServiceAppointment(appointmentID, title, description, location, Double.parseDouble(vehicleOrCostText), financingOrTypeText, startDateTime, endDateTime, customerID, userID, contactID);
         }
 
-        AppointmentHelper.createAppointment(appointmentID, title, description, location, type, startDateTime, endDateTime, customerID, userID, contactID);
         goToAppointmentHomepage();
 
     }

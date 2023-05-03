@@ -7,22 +7,21 @@ import java.time.LocalDateTime;
 
 public class SalesAppointmentHelper {
 
-    public static void createSalesAppointment(int appointmentID, String appointmentTitle, String appointmentDescription, String appointmentLocation, String appointmentType,
-                                              String vehicleName, String financingOption, LocalDateTime startDateTime, LocalDateTime endDateTime, int customerID, int userID, int contactID) throws SQLException {
+    public static void createSalesAppointment(int appointmentID, String appointmentTitle, String appointmentDescription, String appointmentLocation, String vehicleName,
+                                              String financingOption, LocalDateTime startDateTime, LocalDateTime endDateTime, int customerID, int userID, int contactID) throws SQLException {
 
-        PreparedStatement statement = JDBC.getConnection().prepareStatement("INSERT INTO sales_appointments VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP , 'user', CURRENT_TIMESTAMP, 'user', ?, ?, ?);");
+        PreparedStatement statement = JDBC.getConnection().prepareStatement("INSERT INTO sales_appointments VALUES(?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP , 'user', CURRENT_TIMESTAMP, 'user', ?, ?, ?);");
         statement.setInt(1, appointmentID);
         statement.setString(2, appointmentTitle);
         statement.setString(3, appointmentDescription);
         statement.setString(4, appointmentLocation);
-        statement.setString(5, appointmentType);
-        statement.setString(6, vehicleName);
-        statement.setString(7, financingOption);
-        statement.setTimestamp(8, Timestamp.valueOf(startDateTime));
-        statement.setTimestamp(9, Timestamp.valueOf(endDateTime));
-        statement.setInt(10, customerID);
-        statement.setInt(11, userID);
-        statement.setInt(12, contactID);
+        statement.setString(5, vehicleName);
+        statement.setString(6, financingOption);
+        statement.setTimestamp(7, Timestamp.valueOf(startDateTime));
+        statement.setTimestamp(8, Timestamp.valueOf(endDateTime));
+        statement.setInt(9, customerID);
+        statement.setInt(10, userID);
+        statement.setInt(11, contactID);
 
         statement.execute();
 
