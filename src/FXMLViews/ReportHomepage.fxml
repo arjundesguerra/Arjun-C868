@@ -10,7 +10,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="774.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.6" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ReportHomepage">
+<AnchorPane prefHeight="774.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ReportHomepage">
    <children>
       <Button fx:id="backButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goToHomepage">
          <graphic>
@@ -25,8 +25,8 @@
       <Text layoutX="335.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Appointment Totals By Month" />
       <TableView fx:id="typeTableView" layoutX="84.0" layoutY="63.0" prefHeight="157.0" prefWidth="200.0">
         <columns>
-          <TableColumn fx:id="typeColumn" prefWidth="100.0" text="Type" />
-          <TableColumn fx:id="typeTotalColumn" prefWidth="99.0" text="Total" />
+          <TableColumn fx:id="typeColumn" prefWidth="128.0" text="Type" />
+          <TableColumn fx:id="typeTotalColumn" prefWidth="71.0" text="Total" />
         </columns>
       </TableView>
       <TableView fx:id="monthTableView" layoutX="316.0" layoutY="63.0" prefHeight="157.0" prefWidth="200.0">

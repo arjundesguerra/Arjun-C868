@@ -74,6 +74,12 @@ public class AppointmentHelper {
 
     }
 
+    /**
+     * Retrieves all appointments from the database by a search query.
+     *
+     * @return an observable list of appointments
+     * @throws SQLException if there is an error retrieving data from the database
+     */
     public static ObservableList<Appointment> fetchAppointmentsSearch(String searchTitle) throws SQLException {
         ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
 
