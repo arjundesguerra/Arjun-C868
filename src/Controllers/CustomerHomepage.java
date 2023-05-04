@@ -16,7 +16,7 @@ import java.sql.SQLException;
  * The CustomerHomepage class is responsible for displaying the list of customers and their corresponding parts.
  */
 public class CustomerHomepage {
-
+    @FXML private TextField customerSearch;
     @FXML private Button addCustomerButton;
     @FXML private TableView customerTable;
     @FXML private TableColumn customerIdColumn;

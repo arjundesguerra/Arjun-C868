@@ -21,7 +21,7 @@ import java.sql.SQLException;
  * The AppointmentHomepage class is responsible for displaying the list of appointments and their corresponding parts.
  */
 public class AppointmentHomepage {
-
+    @FXML private TextField appointmentSearch;
     @FXML
     private RadioButton allRadioButton;
     @FXML
@@ -249,15 +249,6 @@ public class AppointmentHomepage {
         appointmentCustomerID.setCellValueFactory(new PropertyValueFactory<>("customerID"));
         appointmentUserID.setCellValueFactory(new PropertyValueFactory<>("userID"));
         appointmentContactID.setCellValueFactory(new PropertyValueFactory<>("contactID"));
-    }
-
-    public void goToSearch() throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/FXMLViews/SearchAppointment.fxml"));
-        Scene scene = new Scene(root);
-        Stage newStage = new Stage();
-        newStage.setTitle("Search Appointment");
-        newStage.setScene(scene);
-        newStage.show();
     }
 
     /**
