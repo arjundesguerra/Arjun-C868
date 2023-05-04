@@ -27,6 +27,26 @@ public class ServiceAppointmentHelper {
 
     }
 
+    public static void editServiceAppointment(int appointmentID, String appointmentTitle, String appointmentDescription, String appointmentLocation, double serviceCost,
+                                              String serviceType, LocalDateTime startDateTime, LocalDateTime endDateTime, int customerID, int userID, int contactID) throws SQLException {
+
+        PreparedStatement statement = JDBC.getConnection().prepareStatement("UPDATE service_appointments SET Title = ?, Description = ?, Location = ?, Service_Cost = ?, Service_Type = ?, Start = ?, End = ?, Last_Update = CURRENT_TIMESTAMP, Customer_ID = ?, User_ID = ?, Contact_ID = ? WHERE Appointment_ID = ?");
+        statement.setString(1, appointmentTitle);
+        statement.setString(2, appointmentDescription);
+        statement.setString(3, appointmentLocation);
+        statement.setDouble(4, serviceCost);
+        statement.setString(5, serviceType);
+        statement.setTimestamp(6, Timestamp.valueOf(startDateTime));
+        statement.setTimestamp(7, Timestamp.valueOf(endDateTime));
+        statement.setInt(8, customerID);
+        statement.setInt(9, userID);
+        statement.setInt(10, contactID);
+        statement.setInt(11, appointmentID);
+
+        statement.execute();
+
+    }
+
     public static void deleteAppointment(int appointmentID) throws SQLException {
         String sqlDC = "DELETE from service_appointments WHERE Appointment_ID = ?";
         try (PreparedStatement psDC = JDBC.getConnection().prepareStatement(sqlDC)) {

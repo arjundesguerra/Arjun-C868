@@ -4,6 +4,7 @@ import Database.AppointmentHelper;
 import Database.SalesAppointmentHelper;
 import Database.ServiceAppointmentHelper;
 import Models.Appointment;
+import Models.SalesAppointment;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -126,6 +127,7 @@ public class AppointmentHomepage {
         }
 
     }
+
 
     /**
      * Deletes the selected appointment from the appointment table and the database.

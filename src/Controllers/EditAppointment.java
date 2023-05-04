@@ -1,9 +1,6 @@
 package Controllers;
 
-import Database.AppointmentHelper;
-import Database.ContactHelper;
-import Database.CustomerHelper;
-import Database.UserHelper;
+import Database.*;
 import Models.Contact;
 import Models.Customer;
 import Models.User;
@@ -15,6 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -27,7 +25,11 @@ import java.util.List;
  * The EditAppointment class manages the functionality for editing an existing appointment in the database.
  */
 public class EditAppointment {
-
+    @FXML
+    private RadioButton salesRadioButton;
+    @FXML
+    private RadioButton serviceRadioButton;
+    private ToggleGroup appointmentTypeGroup;
     @FXML private TextField appointmentIDTextField;
     @FXML private ComboBox customerComboBox;
     @FXML private ComboBox userComboBox;
@@ -35,7 +37,14 @@ public class EditAppointment {
     @FXML private TextField titleTextField;
     @FXML private TextField descriptionTextField;
     @FXML private TextField locationTextField;
-    @FXML private TextField typeTextField;
+    @FXML
+    private Text vehicleOrCostText;
+    @FXML
+    private TextField vehicleOrCostTextField;
+    @FXML
+    private Text financingOrTypeText;
+    @FXML
+    private ComboBox financingOrTypeComboBox;
     @FXML private DatePicker datePicker;
     @FXML private ComboBox startTimeComboBox;
     @FXML private ComboBox endTimeComboBox;
@@ -63,6 +72,17 @@ public class EditAppointment {
 
         setComboBoxes();
         setTimeComboBoxes();
+
+        appointmentTypeGroup = new ToggleGroup();
+        salesRadioButton.setToggleGroup(appointmentTypeGroup);
+        serviceRadioButton.setToggleGroup(appointmentTypeGroup);
+
+        salesRadioButton.setOnAction(event -> setToSales());
+        serviceRadioButton.setOnAction(event -> setToService());
+
+        salesRadioButton.setSelected(true);
+        ObservableList<String> options = FXCollections.observableArrayList("Cash", "Lease", "Loan");
+        financingOrTypeComboBox.setItems(options);
     }
 
     /**
@@ -103,7 +123,6 @@ public class EditAppointment {
         titleTextField.setText(appointmentTitle);
         descriptionTextField.setText(appointmentDescription);
         locationTextField.setText(appointmentLocation);
-        typeTextField.setText(appointmentType);
         datePicker.setValue(startDateTime.toLocalDate());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -159,6 +178,22 @@ public class EditAppointment {
         endTimeComboBox.setItems(timeObservableList);
     }
 
+    public void setToSales() {
+        vehicleOrCostText.setText("Vehicle:");
+        financingOrTypeText.setText("Financing Option:");
+        ObservableList<String> options = FXCollections.observableArrayList("Cash", "Lease", "Loan");
+        financingOrTypeComboBox.setItems(options);
+        vehicleOrCostTextField.setText("");
+    }
+
+    public void setToService() {
+        vehicleOrCostText.setText("Service Cost:");
+        financingOrTypeText.setText("Service Type:");
+        ObservableList<String> options = FXCollections.observableArrayList("Oil Change", "Tire Rotation", "Alignment");
+        financingOrTypeComboBox.setItems(options);
+        vehicleOrCostTextField.setText("");
+    }
+
     /**
      * Validates and updates the database with the edited appointment.
      * Returns to Appointment Homepage after successful submission.
@@ -166,16 +201,16 @@ public class EditAppointment {
      * @throws IOException  if there is an error with input/output
      * @throws SQLException if there is an error retrieving data from the database
      */
+
     public void submit() throws IOException, SQLException {
         // gets Strings for getIDbyName methods in helper classes
         String customerName = (String) customerComboBox.getValue();
         String userName = (String) userComboBox.getValue();
         String contactName = (String) contactComboBox.getValue();
 
-        if (customerComboBox.getValue() == null || userComboBox.getValue() == null || contactComboBox.getValue() == null ||
+        if (appointmentTypeGroup.getSelectedToggle() == null || customerComboBox.getValue() == null || userComboBox.getValue() == null || contactComboBox.getValue() == null ||
                 titleTextField.getText().isEmpty() || descriptionTextField.getText().isEmpty() || locationTextField.getText().isEmpty() ||
-                typeTextField.getText().isEmpty() || datePicker.getValue() == null || startTimeComboBox.getValue() == null || endTimeComboBox.getValue() == null) {
-
+                vehicleOrCostTextField.getText() == null || financingOrTypeComboBox.getValue() == null || datePicker.getValue() == null || startTimeComboBox.getValue() == null || endTimeComboBox.getValue() == null) {
             // display error message if any fields are empty
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -185,6 +220,10 @@ public class EditAppointment {
             return;
         }
 
+        String vehicleOrCost = vehicleOrCostTextField.getText();
+        String financingOrType = (String) financingOrTypeComboBox.getValue();
+
+        String type = ((RadioButton) appointmentTypeGroup.getSelectedToggle()).getText();
         int appointmentID = Integer.parseInt(appointmentIDTextField.getText());
         int customerID = CustomerHelper.getCustomerIDByName(customerName);
         int userID = UserHelper.getUserIDByName(userName);
@@ -192,7 +231,6 @@ public class EditAppointment {
         String title = titleTextField.getText();
         String description = descriptionTextField.getText();
         String location = locationTextField.getText();
-        String type = typeTextField.getText();
         LocalDate date = datePicker.getValue();
         String startTime = (String) startTimeComboBox.getValue();
         String endTime = (String) endTimeComboBox.getValue();
@@ -221,6 +259,17 @@ public class EditAppointment {
             return;
         }
 
+        // check if the selected date is before the current date
+        LocalDate currentDate = LocalDate.now();
+        if (date.isBefore(currentDate)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Appointments cannot be scheduled for dates before the current date.");
+            alert.showAndWait();
+            return;
+        }
+
         // checks if the new appointment overlaps with existing appointments with the customer
         if (AppointmentHelper.isAppointmentOverlap(startDateTime, endDateTime, customerID, appointmentID)) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -245,10 +294,30 @@ public class EditAppointment {
             return;
         }
 
-        AppointmentHelper.editAppointment(appointmentID, title, description, location, type, startDateTime, endDateTime, customerID, userID, contactID);
+        if (salesRadioButton.isSelected()) {
+            AppointmentHelper.editAppointment(appointmentID, title, description, location, type, startDateTime, endDateTime, customerID, userID, contactID);
+
+            SalesAppointmentHelper.editSalesAppointment(appointmentID, title, description, location, vehicleOrCost, financingOrType, startDateTime, endDateTime, customerID, userID, contactID);
+        } else if (serviceRadioButton.isSelected()) {
+            try {
+                Double.parseDouble(vehicleOrCost);
+            } catch (NumberFormatException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Please input a valid price.");
+                alert.showAndWait();
+                return;
+            }
+            AppointmentHelper.editAppointment(appointmentID, title, description, location, type, startDateTime, endDateTime, customerID, userID, contactID);
+            ServiceAppointmentHelper.editServiceAppointment(appointmentID, title, description, location, Double.parseDouble(vehicleOrCost), financingOrType, startDateTime, endDateTime, customerID, userID, contactID);
+        }
+
         goToAppointmentHomepage();
 
     }
+
+
 
     /**
      * Loads the Appointment Homepage view and closes the current stage.
