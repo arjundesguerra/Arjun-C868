@@ -3,6 +3,7 @@ package Controllers;
 import Database.*;
 import Models.Contact;
 import Models.Customer;
+import Models.ServiceAppointment;
 import Models.User;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -14,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.*;
@@ -30,13 +32,20 @@ public class EditAppointment {
     @FXML
     private RadioButton serviceRadioButton;
     private ToggleGroup appointmentTypeGroup;
-    @FXML private TextField appointmentIDTextField;
-    @FXML private ComboBox customerComboBox;
-    @FXML private ComboBox userComboBox;
-    @FXML private ComboBox contactComboBox;
-    @FXML private TextField titleTextField;
-    @FXML private TextField descriptionTextField;
-    @FXML private TextField locationTextField;
+    @FXML
+    private TextField appointmentIDTextField;
+    @FXML
+    private ComboBox customerComboBox;
+    @FXML
+    private ComboBox userComboBox;
+    @FXML
+    private ComboBox contactComboBox;
+    @FXML
+    private TextField titleTextField;
+    @FXML
+    private TextField descriptionTextField;
+    @FXML
+    private TextField locationTextField;
     @FXML
     private Text vehicleOrCostText;
     @FXML
@@ -45,10 +54,14 @@ public class EditAppointment {
     private Text financingOrTypeText;
     @FXML
     private ComboBox financingOrTypeComboBox;
-    @FXML private DatePicker datePicker;
-    @FXML private ComboBox startTimeComboBox;
-    @FXML private ComboBox endTimeComboBox;
-    @FXML private Button submitButton;
+    @FXML
+    private DatePicker datePicker;
+    @FXML
+    private ComboBox startTimeComboBox;
+    @FXML
+    private ComboBox endTimeComboBox;
+    @FXML
+    private Button submitButton;
     private int appointmentID;
     private String appointmentTitle;
     private String appointmentDescription;
@@ -88,16 +101,16 @@ public class EditAppointment {
     /**
      * Sets the data for an appointment object and populates the appointment form fields with the given data.
      *
-     * @param appointmentID The ID of the appointment.
-     * @param appointmentTitle The title of the appointment.
+     * @param appointmentID          The ID of the appointment.
+     * @param appointmentTitle       The title of the appointment.
      * @param appointmentDescription The description of the appointment.
-     * @param appointmentLocation The location of the appointment.
-     * @param appointmentType The type of the appointment.
-     * @param startDateTime The start date and time of the appointment.
-     * @param endDateTime The end date and time of the appointment.
-     * @param customerID The ID of the customer associated with the appointment.
-     * @param userID The ID of the user associated with the appointment.
-     * @param contactID The ID of the contact associated with the appointment.
+     * @param appointmentLocation    The location of the appointment.
+     * @param appointmentType        The type of the appointment.
+     * @param startDateTime          The start date and time of the appointment.
+     * @param endDateTime            The end date and time of the appointment.
+     * @param customerID             The ID of the customer associated with the appointment.
+     * @param userID                 The ID of the user associated with the appointment.
+     * @param contactID              The ID of the contact associated with the appointment.
      * @throws SQLException if there is an error retrieving data from the database
      */
 
@@ -295,9 +308,14 @@ public class EditAppointment {
         }
 
         if (salesRadioButton.isSelected()) {
+            if (appointmentType.equals("Sales Appointment")) {
+                SalesAppointmentHelper.deleteAppointment(appointmentID);
+            } else if (appointmentType.equals("Service Appointment")) {
+                ServiceAppointmentHelper.deleteAppointment(appointmentID);
+            }
             AppointmentHelper.editAppointment(appointmentID, title, description, location, type, startDateTime, endDateTime, customerID, userID, contactID);
+            SalesAppointmentHelper.createSalesAppointment(appointmentID, title, description, location, vehicleOrCost, financingOrType, startDateTime, endDateTime, customerID, userID, contactID);
 
-            SalesAppointmentHelper.editSalesAppointment(appointmentID, title, description, location, vehicleOrCost, financingOrType, startDateTime, endDateTime, customerID, userID, contactID);
         } else if (serviceRadioButton.isSelected()) {
             try {
                 Double.parseDouble(vehicleOrCost);
@@ -310,13 +328,16 @@ public class EditAppointment {
                 return;
             }
             AppointmentHelper.editAppointment(appointmentID, title, description, location, type, startDateTime, endDateTime, customerID, userID, contactID);
-            ServiceAppointmentHelper.editServiceAppointment(appointmentID, title, description, location, Double.parseDouble(vehicleOrCost), financingOrType, startDateTime, endDateTime, customerID, userID, contactID);
+            if (appointmentType.equals("Sales Appointment")) {
+                SalesAppointmentHelper.deleteAppointment(appointmentID);
+            } else if (appointmentType.equals("Service Appointment")) {
+                ServiceAppointmentHelper.deleteAppointment(appointmentID);
+            }
+            AppointmentHelper.editAppointment(appointmentID, title, description, location, type, startDateTime, endDateTime, customerID, userID, contactID);
+            ServiceAppointmentHelper.createServiceAppointment(appointmentID, title, description, location, Double.parseDouble(vehicleOrCost), financingOrType, startDateTime, endDateTime, customerID, userID, contactID);
         }
-
         goToAppointmentHomepage();
-
     }
-
 
 
     /**
@@ -334,7 +355,6 @@ public class EditAppointment {
         Stage currentStage = (Stage) titleTextField.getScene().getWindow();
         currentStage.close();
     }
-
 
 
 }
