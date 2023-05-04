@@ -153,4 +153,36 @@ public class CustomerHelper {
             throw new SQLException(customerID + " not found");
         }
     }
+
+    /**
+     * Searches for customers by name in the database.
+     * @param customerName the name of the customer to search for
+     * @return an ObservableList of Customer objects containing all matching customers
+     * @throws SQLException if there is an error retrieving data from the database
+     */
+    public static ObservableList<Customer> searchCustomers(String customerName) throws SQLException {
+        ObservableList<Customer> customerList = FXCollections.observableArrayList();
+
+        PreparedStatement statement = JDBC.getConnection().prepareStatement("SELECT * FROM customers JOIN first_level_divisions ON customers.Division_ID = first_level_divisions.Division_ID "
+                + "JOIN countries ON first_level_divisions.Country_ID = countries.Country_ID WHERE Customer_Name LIKE ? ORDER BY Customer_ID ");
+        statement.setString(1, "%" + customerName + "%");
+
+        ResultSet resultSet = statement.executeQuery();
+
+        while (resultSet.next()) {
+            int customerID = resultSet.getInt("Customer_ID");
+            String customerNameResult = resultSet.getString("Customer_Name");
+            String customerPhoneNumber = resultSet.getString("Phone");
+            String customerAddress = resultSet.getString("Address");
+            String customerDivision = resultSet.getString("Division");
+            String customerCountry = resultSet.getString("Country");
+            String customerPostalCode = resultSet.getString("Postal_Code");
+
+            Customer customer = new Customer(customerID, customerNameResult, customerPhoneNumber, customerAddress, customerDivision, customerCountry, customerPostalCode);
+            customerList.add(customer);
+        }
+
+        return customerList;
+    }
+
 }

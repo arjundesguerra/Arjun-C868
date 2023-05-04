@@ -47,11 +47,11 @@
    <RadioButton fx:id="allRadioButton" layoutX="748.0" layoutY="21.0" mnemonicParsing="false" selected="true" text="All" />
    <RadioButton fx:id="monthRadioButton" layoutX="795.0" layoutY="21.0" mnemonicParsing="false" text="Month" />
    <RadioButton fx:id="weekRadioButton" layoutX="864.0" layoutY="21.0" mnemonicParsing="false" text="Week" />
-   <ImageView fitHeight="23.0" fitWidth="48.0" layoutX="54.0" layoutY="59.0" pickOnBounds="true" preserveRatio="true">
+   <ImageView fitHeight="23.0" fitWidth="48.0" layoutX="41.0" layoutY="59.0" pickOnBounds="true" preserveRatio="true">
       <image>
          <Image url="@../Images/magnifying-glass.png" />
       </image>
    </ImageView>
-   <TextField fx:id="appointmentSearch" layoutX="87.0" layoutY="57.0" prefHeight="26.0" prefWidth="173.0" promptText="Search Appointment Title" />
+   <TextField fx:id="appointmentSearch" layoutX="74.0" layoutY="57.0" prefHeight="26.0" prefWidth="173.0" promptText="Search Appointment Title" />
 
 </AnchorPane>

@@ -1,14 +1,18 @@
 package Controllers;
+
 import Database.AppointmentHelper;
 import Database.CustomerHelper;
 import Models.Customer;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -16,16 +20,26 @@ import java.sql.SQLException;
  * The CustomerHomepage class is responsible for displaying the list of customers and their corresponding parts.
  */
 public class CustomerHomepage {
-    @FXML private TextField customerSearch;
-    @FXML private Button addCustomerButton;
-    @FXML private TableView customerTable;
-    @FXML private TableColumn customerIdColumn;
-    @FXML private TableColumn customerNameColumn;
-    @FXML private TableColumn customerNumberColumn;
-    @FXML private TableColumn customerAddressColumn;
-    @FXML private TableColumn customerDivisionColumn;
-    @FXML private TableColumn customerCountryColumn;
-    @FXML private TableColumn customerPostalCodeColumn;
+    @FXML
+    private TextField customerSearch;
+    @FXML
+    private Button addCustomerButton;
+    @FXML
+    private TableView customerTable;
+    @FXML
+    private TableColumn customerIdColumn;
+    @FXML
+    private TableColumn customerNameColumn;
+    @FXML
+    private TableColumn customerNumberColumn;
+    @FXML
+    private TableColumn customerAddressColumn;
+    @FXML
+    private TableColumn customerDivisionColumn;
+    @FXML
+    private TableColumn customerCountryColumn;
+    @FXML
+    private TableColumn customerPostalCodeColumn;
 
     /**
      * Initializes the Customer Homepage view by displaying the data retrieved from the database using the CustomerHelper class.
@@ -42,6 +56,17 @@ public class CustomerHomepage {
         customerDivisionColumn.setCellValueFactory(new PropertyValueFactory<>("customerDivision"));
         customerCountryColumn.setCellValueFactory(new PropertyValueFactory<>("customerCountry"));
         customerPostalCodeColumn.setCellValueFactory(new PropertyValueFactory<>("customerPostalCode"));
+
+        customerSearch.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                String searchQuery = customerSearch.getText();
+                try {
+                    searchCustomers(searchQuery);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
     }
 
@@ -64,12 +89,11 @@ public class CustomerHomepage {
 
     /**
      * Loads the Edit Customer view and closes the current stage.
-     *
+     * <p>
      * Retrieves the selected customer from the table view and passes the customer's data to the
      * Edit Customer view. If no customer is selected, an error message is displayed.
      *
      * @throws IOException If the FXML file for the Edit Customer view cannot be found.
-     *
      */
     public void goToEditCustomer() throws IOException {
         Customer selectedCustomer = (Customer) customerTable.getSelectionModel().getSelectedItem();
@@ -122,6 +146,16 @@ public class CustomerHomepage {
             }
         }
     }
+
+    public void searchCustomers(String searchQuery) throws SQLException {
+        ObservableList<Customer> searchedCustomers = CustomerHelper.searchCustomers(searchQuery);
+        if (searchedCustomers.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "No customer found with the given name.", ButtonType.OK);
+            alert.showAndWait();
+        }
+        customerTable.setItems(searchedCustomers);
+    }
+
 
     /**
      * Loads the Homepage view and closes the current stage.

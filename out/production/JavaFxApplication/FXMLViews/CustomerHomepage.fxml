@@ -40,11 +40,11 @@
             </ImageView>
          </graphic>
       </Button>
-      <ImageView fitHeight="23.0" fitWidth="48.0" layoutX="54.0" layoutY="59.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="23.0" fitWidth="48.0" layoutX="41.0" layoutY="59.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Images/magnifying-glass.png" />
          </image>
       </ImageView>
-      <TextField fx:id="customerSearch" layoutX="87.0" layoutY="57.0" prefHeight="26.0" prefWidth="173.0" promptText="Search Customer Name" />
+      <TextField fx:id="customerSearch" layoutX="74.0" layoutY="57.0" prefHeight="26.0" prefWidth="173.0" promptText="Search Customer Name" />
     </children>
 </AnchorPane>
