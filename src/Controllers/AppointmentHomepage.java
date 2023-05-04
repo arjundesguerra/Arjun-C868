@@ -5,6 +5,7 @@ import Database.SalesAppointmentHelper;
 import Database.ServiceAppointmentHelper;
 import Models.Appointment;
 import Models.SalesAppointment;
+import Models.ServiceAppointment;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -20,21 +22,36 @@ import java.sql.SQLException;
  */
 public class AppointmentHomepage {
 
-    @FXML private RadioButton allRadioButton;
-    @FXML private RadioButton monthRadioButton;
-    @FXML private RadioButton weekRadioButton;
-    @FXML private TableView appointmentTable;
-    @FXML private TableColumn appointmentIDColumn;
-    @FXML private TableColumn appointmentTitleColumn;
-    @FXML private TableColumn appointmentDescriptionColumn;
-    @FXML private TableColumn appointmentLocationColumn;
-    @FXML private TableColumn appointmentTypeColumn;
-    @FXML private TableColumn appointmentStartColumn;
-    @FXML private TableColumn appointmentEndColumn;
-    @FXML private TableColumn appointmentCustomerID;
-    @FXML private TableColumn appointmentUserID;
-    @FXML private TableColumn appointmentContactID;
-    @FXML private Button addAppointmentButton;
+    @FXML
+    private RadioButton allRadioButton;
+    @FXML
+    private RadioButton monthRadioButton;
+    @FXML
+    private RadioButton weekRadioButton;
+    @FXML
+    private TableView appointmentTable;
+    @FXML
+    private TableColumn appointmentIDColumn;
+    @FXML
+    private TableColumn appointmentTitleColumn;
+    @FXML
+    private TableColumn appointmentDescriptionColumn;
+    @FXML
+    private TableColumn appointmentLocationColumn;
+    @FXML
+    private TableColumn appointmentTypeColumn;
+    @FXML
+    private TableColumn appointmentStartColumn;
+    @FXML
+    private TableColumn appointmentEndColumn;
+    @FXML
+    private TableColumn appointmentCustomerID;
+    @FXML
+    private TableColumn appointmentUserID;
+    @FXML
+    private TableColumn appointmentContactID;
+    @FXML
+    private Button addAppointmentButton;
     private ToggleGroup appointmentToggleGroup;
 
     /**
@@ -94,17 +111,15 @@ public class AppointmentHomepage {
 
     /**
      * Loads the Edit Appointment view and closes the current stage.
-     *
+     * <p>
      * Retrieves the selected appointment from the table view and passes the appointment's data to the
      * Edit Appointment view. If no appointment is selected, an error message is displayed.
      *
-     * @throws IOException If the FXML file for the Edit Appointment view cannot be found.
-     *
+     * @throws IOException  If the FXML file for the Edit Appointment view cannot be found.
      * @throws SQLException if there is an error retrieving data from the database
      */
     public void goToEditAppointment() throws IOException, SQLException {
-        Appointment selectedAppointment = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
-
+        ServiceAppointment selectedAppointment = (ServiceAppointment) appointmentTable.getSelectionModel().getSelectedItem();
         if (selectedAppointment == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please select a customer to edit.", ButtonType.OK);
             alert.showAndWait();
@@ -115,11 +130,14 @@ public class AppointmentHomepage {
             Stage newStage = new Stage();
             newStage.setTitle("Edit Appointment");
             newStage.setScene(scene);
-
             EditAppointment editAppointment = loader.getController();
-            editAppointment.setAppointmentData(selectedAppointment.getAppointmentID(), selectedAppointment.getAppointmentTitle(), selectedAppointment.getAppointmentDescription(),
-                    selectedAppointment.getAppointmentLocation(),selectedAppointment.getAppointmentType(), selectedAppointment.getStartDateTime(), selectedAppointment.getEndDateTime(), selectedAppointment.getCustomerID(),
-                    selectedAppointment.getUserID(), selectedAppointment.getContactID());
+
+
+            ServiceAppointment serviceAppointment = (ServiceAppointment) appointmentTable.getSelectionModel().getSelectedItem();
+            editAppointment.setAppointmentData(serviceAppointment.getAppointmentID(), serviceAppointment.getAppointmentTitle(), serviceAppointment.getAppointmentDescription(),
+                    serviceAppointment.getAppointmentLocation(), serviceAppointment.getAppointmentType(), String.valueOf(serviceAppointment.getServiceCost()), serviceAppointment.getServiceType(),
+                    serviceAppointment.getStartDateTime(), serviceAppointment.getEndDateTime(), serviceAppointment.getCustomerID(), serviceAppointment.getUserID(), serviceAppointment.getContactID());
+
 
             newStage.show();
             Stage currentStage = (Stage) addAppointmentButton.getScene().getWindow();

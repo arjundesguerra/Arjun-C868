@@ -66,6 +66,8 @@ public class EditAppointment {
     private String appointmentTitle;
     private String appointmentDescription;
     private String appointmentLocation;
+    private String vehicleOrCost;
+    private String financingOrType;
     private String appointmentType;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
@@ -114,14 +116,17 @@ public class EditAppointment {
      * @throws SQLException if there is an error retrieving data from the database
      */
 
-    public void setAppointmentData(int appointmentID, String appointmentTitle, String appointmentDescription, String appointmentLocation, String appointmentType,
-                                   LocalDateTime startDateTime, LocalDateTime endDateTime, int customerID, int userID, int contactID) throws SQLException {
+    public void setAppointmentData(int appointmentID, String appointmentTitle, String appointmentDescription, String appointmentLocation, String appointmentType, String vehicleOrCost,
+                                   String financingOrType, LocalDateTime startDateTime, LocalDateTime endDateTime, int customerID, int userID, int contactID) throws SQLException {
+        this.appointmentType = appointmentType;
+
 
         this.appointmentID = appointmentID;
         this.appointmentTitle = appointmentTitle;
         this.appointmentDescription = appointmentDescription;
         this.appointmentLocation = appointmentLocation;
-        this.appointmentType = appointmentType;
+        this.vehicleOrCost = vehicleOrCost;
+        this.financingOrType = financingOrType;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
         this.customerID = customerID;
@@ -136,6 +141,7 @@ public class EditAppointment {
         titleTextField.setText(appointmentTitle);
         descriptionTextField.setText(appointmentDescription);
         locationTextField.setText(appointmentLocation);
+        vehicleOrCostTextField.setText(vehicleOrCost);
         datePicker.setValue(startDateTime.toLocalDate());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -338,7 +344,6 @@ public class EditAppointment {
         }
         goToAppointmentHomepage();
     }
-
 
     /**
      * Loads the Appointment Homepage view and closes the current stage.
