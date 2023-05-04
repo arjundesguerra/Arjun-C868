@@ -251,6 +251,15 @@ public class AppointmentHomepage {
         appointmentContactID.setCellValueFactory(new PropertyValueFactory<>("contactID"));
     }
 
+    public void goToSearch() throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/FXMLViews/SearchAppointment.fxml"));
+        Scene scene = new Scene(root);
+        Stage newStage = new Stage();
+        newStage.setTitle("Search Appointment");
+        newStage.setScene(scene);
+        newStage.show();
+    }
+
     /**
      * Loads the Homepage view and closes the current stage.
      *

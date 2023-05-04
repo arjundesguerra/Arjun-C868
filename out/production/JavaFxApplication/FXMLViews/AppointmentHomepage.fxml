@@ -10,13 +10,13 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="505.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AppointmentHomepage">
-     <Text layoutX="418.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Appointments" textAlignment="CENTER">
+<AnchorPane prefHeight="520.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AppointmentHomepage">
+     <Text layoutX="418.0" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Appointments" textAlignment="CENTER">
          <font>
              <Font size="21.0" />
          </font>
      </Text>
-     <TableView fx:id="appointmentTable" layoutX="41.0" layoutY="85.0" prefHeight="305.0" prefWidth="878.0">
+     <TableView fx:id="appointmentTable" layoutX="41.0" layoutY="96.0" prefHeight="305.0" prefWidth="878.0">
          <columns>
              <TableColumn fx:id="appointmentIDColumn" prefWidth="50.0" text="Appt. ID" />
              <TableColumn fx:id="appointmentTitleColumn" prefWidth="70.0" text="Title" />
@@ -30,9 +30,9 @@
              <TableColumn fx:id="appointmentContactID" prefWidth="53.0" text="Contact&#10;      ID" />
          </columns>
      </TableView>
-     <Button fx:id="addAppointmentButton" layoutX="87.0" layoutY="430.0" mnemonicParsing="false" onAction="#goToAddAppointment" prefHeight="33.0" prefWidth="180.0" text="Add Appointment" />
-     <Button fx:id="editAppointmentButton" layoutX="391.0" layoutY="430.0" mnemonicParsing="false" onAction="#goToEditAppointment" prefHeight="33.0" prefWidth="180.0" text="Edit Appointment" />
-     <Button fx:id="deleteAppointmentButton" layoutX="694.0" layoutY="430.0" mnemonicParsing="false" onAction="#deleteAppointment" prefHeight="33.0" prefWidth="180.0" text="Delete Appointment" />
+     <Button fx:id="addAppointmentButton" layoutX="87.0" layoutY="441.0" mnemonicParsing="false" onAction="#goToAddAppointment" prefHeight="33.0" prefWidth="180.0" text="Add Appointment" />
+     <Button fx:id="editAppointmentButton" layoutX="391.0" layoutY="441.0" mnemonicParsing="false" onAction="#goToEditAppointment" prefHeight="33.0" prefWidth="180.0" text="Edit Appointment" />
+     <Button fx:id="deleteAppointmentButton" layoutX="694.0" layoutY="441.0" mnemonicParsing="false" onAction="#deleteAppointment" prefHeight="33.0" prefWidth="180.0" text="Delete Appointment" />
      <Button fx:id="backButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goToHomepage">
          <graphic>
              <ImageView fitHeight="23.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
@@ -42,9 +42,18 @@
              </ImageView>
          </graphic>
      </Button>
-   <Text layoutX="639.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Filter Appointments by:" />
-   <RadioButton fx:id="allRadioButton" layoutX="775.0" layoutY="14.0" mnemonicParsing="false" selected="true" text="All" />
-   <RadioButton fx:id="monthRadioButton" layoutX="822.0" layoutY="14.0" mnemonicParsing="false" text="Month" />
-   <RadioButton fx:id="weekRadioButton" layoutX="891.0" layoutY="14.0" mnemonicParsing="false" text="Week" />
+   <Text layoutX="612.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Filter Appointments by:" />
+   <RadioButton fx:id="allRadioButton" layoutX="748.0" layoutY="21.0" mnemonicParsing="false" selected="true" text="All" />
+   <RadioButton fx:id="monthRadioButton" layoutX="795.0" layoutY="21.0" mnemonicParsing="false" text="Month" />
+   <RadioButton fx:id="weekRadioButton" layoutX="864.0" layoutY="21.0" mnemonicParsing="false" text="Week" />
+   <Button fx:id="searchButton" contentDisplay="RIGHT" graphicTextGap="20.0" layoutX="86.0" layoutY="14.0" mnemonicParsing="false" onAction="#goToSearch" text="Search">
+      <graphic>
+         <ImageView fitHeight="23.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+               <Image url="@../Images/magnifying-glass.png" />
+            </image>
+         </ImageView>
+      </graphic>
+   </Button>
 
 </AnchorPane>
