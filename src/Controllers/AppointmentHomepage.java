@@ -119,7 +119,7 @@ public class AppointmentHomepage {
      * @throws SQLException if there is an error retrieving data from the database
      */
     public void goToEditAppointment() throws IOException, SQLException {
-        ServiceAppointment selectedAppointment = (ServiceAppointment) appointmentTable.getSelectionModel().getSelectedItem();
+        Appointment selectedAppointment = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
         if (selectedAppointment == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please select a customer to edit.", ButtonType.OK);
             alert.showAndWait();
@@ -132,12 +132,18 @@ public class AppointmentHomepage {
             newStage.setScene(scene);
             EditAppointment editAppointment = loader.getController();
 
+            if (selectedAppointment.getAppointmentType().equals("Sales Appointment")) {
+                SalesAppointment salesAppointment = (SalesAppointment) appointmentTable.getSelectionModel().getSelectedItem();
+                editAppointment.setAppointmentData(salesAppointment.getAppointmentID(), salesAppointment.getAppointmentTitle(), salesAppointment.getAppointmentDescription(),
+                        salesAppointment.getAppointmentLocation(), salesAppointment.getAppointmentType(), salesAppointment.getVehicle(), salesAppointment.getFinancingOptions(),
+                        salesAppointment.getStartDateTime(), salesAppointment.getEndDateTime(), salesAppointment.getCustomerID(), salesAppointment.getUserID(), salesAppointment.getContactID());
 
-            ServiceAppointment serviceAppointment = (ServiceAppointment) appointmentTable.getSelectionModel().getSelectedItem();
-            editAppointment.setAppointmentData(serviceAppointment.getAppointmentID(), serviceAppointment.getAppointmentTitle(), serviceAppointment.getAppointmentDescription(),
-                    serviceAppointment.getAppointmentLocation(), serviceAppointment.getAppointmentType(), String.valueOf(serviceAppointment.getServiceCost()), serviceAppointment.getServiceType(),
-                    serviceAppointment.getStartDateTime(), serviceAppointment.getEndDateTime(), serviceAppointment.getCustomerID(), serviceAppointment.getUserID(), serviceAppointment.getContactID());
-
+            } else if (selectedAppointment.getAppointmentType().equals("Service Appointment")) {
+                ServiceAppointment serviceAppointment = (ServiceAppointment) appointmentTable.getSelectionModel().getSelectedItem();
+                editAppointment.setAppointmentData(serviceAppointment.getAppointmentID(), serviceAppointment.getAppointmentTitle(), serviceAppointment.getAppointmentDescription(),
+                        serviceAppointment.getAppointmentLocation(), serviceAppointment.getAppointmentType(), String.valueOf(serviceAppointment.getServiceCost()), serviceAppointment.getServiceType(),
+                        serviceAppointment.getStartDateTime(), serviceAppointment.getEndDateTime(), serviceAppointment.getCustomerID(), serviceAppointment.getUserID(), serviceAppointment.getContactID());
+            }
 
             newStage.show();
             Stage currentStage = (Stage) addAppointmentButton.getScene().getWindow();

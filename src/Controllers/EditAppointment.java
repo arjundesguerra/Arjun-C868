@@ -119,8 +119,6 @@ public class EditAppointment {
     public void setAppointmentData(int appointmentID, String appointmentTitle, String appointmentDescription, String appointmentLocation, String appointmentType, String vehicleOrCost,
                                    String financingOrType, LocalDateTime startDateTime, LocalDateTime endDateTime, int customerID, int userID, int contactID) throws SQLException {
         this.appointmentType = appointmentType;
-
-
         this.appointmentID = appointmentID;
         this.appointmentTitle = appointmentTitle;
         this.appointmentDescription = appointmentDescription;
@@ -142,6 +140,7 @@ public class EditAppointment {
         descriptionTextField.setText(appointmentDescription);
         locationTextField.setText(appointmentLocation);
         vehicleOrCostTextField.setText(vehicleOrCost);
+        financingOrTypeComboBox.setValue(financingOrType);
         datePicker.setValue(startDateTime.toLocalDate());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");

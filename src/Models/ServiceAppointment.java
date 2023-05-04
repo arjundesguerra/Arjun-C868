@@ -3,13 +3,13 @@ package Models;
 import java.time.LocalDateTime;
 
 public class ServiceAppointment extends Appointment {
-    private String serviceType;
     private double serviceCost;
+    private String serviceType;
 
-    public ServiceAppointment(int appointmentID, String appointmentTitle, String appointmentDescription, String appointmentLocation, String appointmentType, String serviceType, double serviceCost, LocalDateTime startDateTime, LocalDateTime endDateTime, int customerID, int userID, int contactID) {
+    public ServiceAppointment(int appointmentID, String appointmentTitle, String appointmentDescription, String appointmentLocation, String appointmentType, double serviceCost, String serviceType, LocalDateTime startDateTime, LocalDateTime endDateTime, int customerID, int userID, int contactID) {
         super(appointmentID, appointmentTitle, appointmentDescription, appointmentLocation, appointmentType, startDateTime, endDateTime, customerID, userID, contactID);
-        this.serviceType = serviceType;
         this.serviceCost = serviceCost;
+        this.serviceType = serviceType;
     }
 
     public String getServiceType() { return serviceType; }

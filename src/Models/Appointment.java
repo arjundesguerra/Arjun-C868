@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 /**
  * The Appointment class represents an appointment.
  */
-public class Appointment {
+public abstract class Appointment {
     private int appointmentID;
     private String appointmentTitle;
     private String appointmentDescription;

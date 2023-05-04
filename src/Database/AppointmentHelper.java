@@ -1,8 +1,11 @@
 package Database;
 
 import Models.Appointment;
+import Models.SalesAppointment;
+import Models.ServiceAppointment;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -42,13 +45,35 @@ public class AppointmentHelper {
             int userID = resultSet.getInt("User_ID");
             int contactID = resultSet.getInt("Contact_ID");
 
+            Appointment appointment;
 
-            Appointment appointment = new Appointment(appointmentID, appointmentTitle, appointmentDescription, appointmentLocation, appointmentType, startDateTime, endDateTime, customerID, userID, contactID);
-            appointmentList.add(appointment);
+            if (appointmentType.equals("Service Appointment")) {
+                PreparedStatement serviceStatement = JDBC.getConnection().prepareStatement("SELECT Service_Cost, Service_Type FROM service_appointments WHERE Appointment_ID = ?");
+                serviceStatement.setInt(1, appointmentID);
+                ResultSet serviceResult = serviceStatement.executeQuery();
+                if (serviceResult.next()) {
+                    double serviceCost = serviceResult.getDouble("Service_Cost");
+                    String serviceType = serviceResult.getString("Service_Type");
+                    appointment = new ServiceAppointment(appointmentID, appointmentTitle, appointmentDescription, appointmentLocation, appointmentType, serviceCost, serviceType, startDateTime, endDateTime, customerID, userID, contactID);
+                    appointmentList.add(appointment);
+                }
+            } else if (appointmentType.equals("Sales Appointment")) {
+                PreparedStatement salesStatement = JDBC.getConnection().prepareStatement("SELECT Vehicle, Financing_Option FROM sales_appointments WHERE Appointment_ID = ?");
+                salesStatement.setInt(1, appointmentID);
+                ResultSet salesResult = salesStatement.executeQuery();
+                if (salesResult.next()) {
+                    String vehicle = salesResult.getString("Vehicle");
+                    String financingOptions = salesResult.getString("Financing_Option");
+                    appointment = new SalesAppointment(appointmentID, appointmentTitle, appointmentDescription, appointmentLocation, appointmentType, vehicle, financingOptions, startDateTime, endDateTime, customerID, userID, contactID);
+                    appointmentList.add(appointment);
+                }
+            }
         }
 
         return appointmentList;
+
     }
+
 
     /**
      * Retrieves all appointments for the current month from the database.
@@ -81,8 +106,29 @@ public class AppointmentHelper {
             int userID = resultSet.getInt("User_ID");
             int contactID = resultSet.getInt("Contact_ID");
 
-            Appointment appointment = new Appointment(appointmentID, appointmentTitle, appointmentDescription, appointmentLocation, appointmentType, startDateTime, endDateTime, customerID, userID, contactID);
-            monthAppointmentList.add(appointment);
+            Appointment appointment;
+
+            if (appointmentType.equals("Service Appointment")) {
+                PreparedStatement serviceStatement = JDBC.getConnection().prepareStatement("SELECT Service_Cost, Service_Type FROM service_appointments WHERE Appointment_ID = ?");
+                serviceStatement.setInt(1, appointmentID);
+                ResultSet serviceResult = serviceStatement.executeQuery();
+                if (serviceResult.next()) {
+                    double serviceCost = serviceResult.getDouble("Service_Cost");
+                    String serviceType = serviceResult.getString("Service_Type");
+                    appointment = new ServiceAppointment(appointmentID, appointmentTitle, appointmentDescription, appointmentLocation, appointmentType, serviceCost, serviceType, startDateTime, endDateTime, customerID, userID, contactID);
+                    monthAppointmentList.add(appointment);
+                }
+            } else if (appointmentType.equals("Sales Appointment")) {
+                PreparedStatement salesStatement = JDBC.getConnection().prepareStatement("SELECT Vehicle, Financing_Option FROM sales_appointments WHERE Appointment_ID = ?");
+                salesStatement.setInt(1, appointmentID);
+                ResultSet salesResult = salesStatement.executeQuery();
+                if (salesResult.next()) {
+                    String vehicle = salesResult.getString("Vehicle");
+                    String financingOptions = salesResult.getString("Financing_Option");
+                    appointment = new SalesAppointment(appointmentID, appointmentTitle, appointmentDescription, appointmentLocation, appointmentType, vehicle, financingOptions, startDateTime, endDateTime, customerID, userID, contactID);
+                    monthAppointmentList.add(appointment);
+                }
+            }
         }
 
         return monthAppointmentList;
@@ -119,8 +165,29 @@ public class AppointmentHelper {
             int userID = resultSet.getInt("User_ID");
             int contactID = resultSet.getInt("Contact_ID");
 
-            Appointment appointment = new Appointment(appointmentID, appointmentTitle, appointmentDescription, appointmentLocation, appointmentType, startDateTime, endDateTime, customerID, userID, contactID);
-            weekAppointmentList.add(appointment);
+            Appointment appointment;
+
+            if (appointmentType.equals("Service Appointment")) {
+                PreparedStatement serviceStatement = JDBC.getConnection().prepareStatement("SELECT Service_Cost, Service_Type FROM service_appointments WHERE Appointment_ID = ?");
+                serviceStatement.setInt(1, appointmentID);
+                ResultSet serviceResult = serviceStatement.executeQuery();
+                if (serviceResult.next()) {
+                    double serviceCost = serviceResult.getDouble("Service_Cost");
+                    String serviceType = serviceResult.getString("Service_Type");
+                    appointment = new ServiceAppointment(appointmentID, appointmentTitle, appointmentDescription, appointmentLocation, appointmentType, serviceCost, serviceType, startDateTime, endDateTime, customerID, userID, contactID);
+                    weekAppointmentList.add(appointment);
+                }
+            } else if (appointmentType.equals("Sales Appointment")) {
+                PreparedStatement salesStatement = JDBC.getConnection().prepareStatement("SELECT Vehicle, Financing_Option FROM sales_appointments WHERE Appointment_ID = ?");
+                salesStatement.setInt(1, appointmentID);
+                ResultSet salesResult = salesStatement.executeQuery();
+                if (salesResult.next()) {
+                    String vehicle = salesResult.getString("Vehicle");
+                    String financingOptions = salesResult.getString("Financing_Option");
+                    appointment = new SalesAppointment(appointmentID, appointmentTitle, appointmentDescription, appointmentLocation, appointmentType, vehicle, financingOptions, startDateTime, endDateTime, customerID, userID, contactID);
+                    weekAppointmentList.add(appointment);
+                }
+            }
         }
 
         return weekAppointmentList;
@@ -130,11 +197,12 @@ public class AppointmentHelper {
      * Retrieves all appointments between the specified start and end times from the database.
      *
      * @param start the start time of the appointments to retrieve
-     * @param end the end time of the appointments to retrieve
+     * @param end   the end time of the appointments to retrieve
      * @return an observable list of appointments between the specified start and end times
      * @throws SQLException if there is an error retrieving data from the database
      */
-    public static ObservableList<Appointment> fetchAppointmentsByTime(LocalDateTime start, LocalDateTime end) throws SQLException {
+    public static ObservableList<Appointment> fetchAppointmentsByTime(LocalDateTime start, LocalDateTime end) throws
+            SQLException {
         ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
 
         PreparedStatement statement = JDBC.getConnection().prepareStatement("SELECT * FROM appointments WHERE Start >= ? AND Start < ?");
@@ -155,8 +223,29 @@ public class AppointmentHelper {
             int userID = resultSet.getInt("User_ID");
             int contactID = resultSet.getInt("Contact_ID");
 
-            Appointment appointment = new Appointment(appointmentID, appointmentTitle, appointmentDescription, appointmentLocation, appointmentType, startDateTime, endDateTime, customerID, userID, contactID);
-            appointmentList.add(appointment);
+            Appointment appointment;
+
+            if (appointmentType.equals("Service Appointment")) {
+                PreparedStatement serviceStatement = JDBC.getConnection().prepareStatement("SELECT Service_Cost, Service_Type FROM service_appointments WHERE Appointment_ID = ?");
+                serviceStatement.setInt(1, appointmentID);
+                ResultSet serviceResult = serviceStatement.executeQuery();
+                if (serviceResult.next()) {
+                    double serviceCost = serviceResult.getDouble("Service_Cost");
+                    String serviceType = serviceResult.getString("Service_Type");
+                    appointment = new ServiceAppointment(appointmentID, appointmentTitle, appointmentDescription, appointmentLocation, appointmentType, serviceCost, serviceType, startDateTime, endDateTime, customerID, userID, contactID);
+                    appointmentList.add(appointment);
+                }
+            } else if (appointmentType.equals("Sales Appointment")) {
+                PreparedStatement salesStatement = JDBC.getConnection().prepareStatement("SELECT Vehicle, Financing_Option FROM sales_appointments WHERE Appointment_ID = ?");
+                salesStatement.setInt(1, appointmentID);
+                ResultSet salesResult = salesStatement.executeQuery();
+                if (salesResult.next()) {
+                    String vehicle = salesResult.getString("Vehicle");
+                    String financingOptions = salesResult.getString("Financing_Option");
+                    appointment = new SalesAppointment(appointmentID, appointmentTitle, appointmentDescription, appointmentLocation, appointmentType, vehicle, financingOptions, startDateTime, endDateTime, customerID, userID, contactID);
+                    appointmentList.add(appointment);
+                }
+            }
         }
 
         return appointmentList;
@@ -192,8 +281,29 @@ public class AppointmentHelper {
             int userID = resultSet.getInt("User_ID");
             int contactID = resultSet.getInt("Contact_ID");
 
-            Appointment appointment = new Appointment(appointmentID, appointmentTitle, appointmentDescription, appointmentLocation, appointmentType, startDateTime, endDateTime, customerID, userID, contactID);
-            appointmentList.add(appointment);
+            Appointment appointment;
+
+            if (appointmentType.equals("Service Appointment")) {
+                PreparedStatement serviceStatement = JDBC.getConnection().prepareStatement("SELECT Service_Cost, Service_Type FROM service_appointments WHERE Appointment_ID = ?");
+                serviceStatement.setInt(1, appointmentID);
+                ResultSet serviceResult = serviceStatement.executeQuery();
+                if (serviceResult.next()) {
+                    double serviceCost = serviceResult.getDouble("Service_Cost");
+                    String serviceType = serviceResult.getString("Service_Type");
+                    appointment = new ServiceAppointment(appointmentID, appointmentTitle, appointmentDescription, appointmentLocation, appointmentType, serviceCost, serviceType, startDateTime, endDateTime, customerID, userID, contactID);
+                    appointmentList.add(appointment);
+                }
+            } else if (appointmentType.equals("Sales Appointment")) {
+                PreparedStatement salesStatement = JDBC.getConnection().prepareStatement("SELECT Vehicle, Financing_Option FROM sales_appointments WHERE Appointment_ID = ?");
+                salesStatement.setInt(1, appointmentID);
+                ResultSet salesResult = salesStatement.executeQuery();
+                if (salesResult.next()) {
+                    String vehicle = salesResult.getString("Vehicle");
+                    String financingOptions = salesResult.getString("Financing_Option");
+                    appointment = new SalesAppointment(appointmentID, appointmentTitle, appointmentDescription, appointmentLocation, appointmentType, vehicle, financingOptions, startDateTime, endDateTime, customerID, userID, contactID);
+                    appointmentList.add(appointment);
+                }
+            }
         }
 
         return appointmentList;
@@ -202,20 +312,22 @@ public class AppointmentHelper {
     /**
      * Creates a new appointment in the database.
      *
-     * @param appointmentID         the appointment ID
-     * @param appointmentTitle      the appointment title
+     * @param appointmentID          the appointment ID
+     * @param appointmentTitle       the appointment title
      * @param appointmentDescription the appointment description
-     * @param appointmentLocation   the appointment location
-     * @param appointmentType       the appointment type
-     * @param startDateTime         the start date and time of the appointment
-     * @param endDateTime           the end date and time of the appointment
-     * @param customerID            the customer ID associated with the appointment
-     * @param userID                the user ID associated with the appointment
-     * @param contactID             the contact ID associated with the appointment
+     * @param appointmentLocation    the appointment location
+     * @param appointmentType        the appointment type
+     * @param startDateTime          the start date and time of the appointment
+     * @param endDateTime            the end date and time of the appointment
+     * @param customerID             the customer ID associated with the appointment
+     * @param userID                 the user ID associated with the appointment
+     * @param contactID              the contact ID associated with the appointment
      * @throws SQLException if there is an error inserting data into the database
      */
-    public static void createAppointment(int appointmentID, String appointmentTitle, String appointmentDescription, String appointmentLocation, String appointmentType,
-                                         LocalDateTime startDateTime, LocalDateTime endDateTime, int customerID, int userID, int contactID) throws SQLException {
+    public static void createAppointment(int appointmentID, String appointmentTitle, String
+            appointmentDescription, String appointmentLocation, String appointmentType,
+                                         LocalDateTime startDateTime, LocalDateTime endDateTime, int customerID, int userID, int contactID) throws
+            SQLException {
 
         PreparedStatement statement = JDBC.getConnection().prepareStatement("INSERT INTO appointments VALUES(?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP , 'user', CURRENT_TIMESTAMP, 'user', ?, ?, ?);");
         statement.setInt(1, appointmentID);
@@ -237,20 +349,22 @@ public class AppointmentHelper {
     /**
      * Edits an existing appointment in the database.
      *
-     * @param appointmentID         the appointment ID
-     * @param appointmentTitle      the appointment title
+     * @param appointmentID          the appointment ID
+     * @param appointmentTitle       the appointment title
      * @param appointmentDescription the appointment description
-     * @param appointmentLocation   the appointment location
-     * @param appointmentType       the appointment type
-     * @param startDateTime         the start date and time of the appointment
-     * @param endDateTime           the end date and time of the appointment
-     * @param customerID            the customer ID associated with the appointment
-     * @param userID                the user ID associated with the appointment
-     * @param contactID             the contact ID associated with the appointment
+     * @param appointmentLocation    the appointment location
+     * @param appointmentType        the appointment type
+     * @param startDateTime          the start date and time of the appointment
+     * @param endDateTime            the end date and time of the appointment
+     * @param customerID             the customer ID associated with the appointment
+     * @param userID                 the user ID associated with the appointment
+     * @param contactID              the contact ID associated with the appointment
      * @throws SQLException if there is an error updating data in the database
      */
-    public static void editAppointment(int appointmentID, String appointmentTitle, String appointmentDescription, String appointmentLocation, String appointmentType,
-                                         LocalDateTime startDateTime, LocalDateTime endDateTime, int customerID, int userID, int contactID) throws SQLException {
+    public static void editAppointment(int appointmentID, String appointmentTitle, String
+            appointmentDescription, String appointmentLocation, String appointmentType,
+                                       LocalDateTime startDateTime, LocalDateTime endDateTime, int customerID, int userID, int contactID) throws
+            SQLException {
 
         PreparedStatement statement = JDBC.getConnection().prepareStatement("UPDATE appointments SET Title = ?, Description = ?, Location = ?, Type = ?, Start = ?, End = ?, Last_Update = CURRENT_TIMESTAMP, Customer_ID = ?, User_ID = ?, Contact_ID = ? WHERE Appointment_ID = ?");
         statement.setString(1, appointmentTitle);
@@ -272,8 +386,8 @@ public class AppointmentHelper {
     /**
      * Deletes an appointment from the database.
      *
-     * @param appointmentID         the appointment ID to delete
-     * @throws SQLException        if there is an error executing the SQL statement
+     * @param appointmentID the appointment ID to delete
+     * @throws SQLException if there is an error executing the SQL statement
      */
     public static void deleteAppointment(int appointmentID) throws SQLException {
         String sqlDC = "DELETE from appointments WHERE Appointment_ID = ?";
@@ -287,13 +401,14 @@ public class AppointmentHelper {
      * Determines whether an appointment overlaps with an existing appointment for the specified customer.
      *
      * @param startDateTime The start date and time of the appointment to be checked.
-     * @param endDateTime The end date and time of the appointment to be checked.
-     * @param customerID The ID of the customer whose existing appointments should be checked for overlap.
+     * @param endDateTime   The end date and time of the appointment to be checked.
+     * @param customerID    The ID of the customer whose existing appointments should be checked for overlap.
      * @param appointmentID The ID of the appointment being edited (if any).
      * @return true if the appointment overlaps with an existing appointment for the specified customer, false otherwise.
      * @throws SQLException if there is an error retrieving data from the database
      */
-    public static boolean isAppointmentOverlap(LocalDateTime startDateTime, LocalDateTime endDateTime, int customerID, int appointmentID) throws SQLException {
+    public static boolean isAppointmentOverlap(LocalDateTime startDateTime, LocalDateTime endDateTime,
+                                               int customerID, int appointmentID) throws SQLException {
         ObservableList<Appointment> appointments = fetchAppointments();
 
         for (Appointment appointment : appointments) {
@@ -326,6 +441,7 @@ public class AppointmentHelper {
 
     /**
      * Retrieves the highest ID currently in use for appointments in the database.
+     *
      * @return the highest ID currently in use for appointments in the database
      * @throws SQLException if there is an error retrieving data from the database
      */
