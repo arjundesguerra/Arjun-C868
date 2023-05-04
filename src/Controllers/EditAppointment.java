@@ -131,6 +131,14 @@ public class EditAppointment {
         this.userID = userID;
         this.contactID = contactID;
 
+        if (appointmentType.equals("Sales Appointment")) {
+            salesRadioButton.setSelected(true);
+            setToSales();
+        } else if (appointmentType.equals("Service Appointment")) {
+            serviceRadioButton.setSelected(true);
+            setToService();
+        }
+
 
         appointmentIDTextField.setText(Integer.toString(appointmentID));
         customerComboBox.setValue(CustomerHelper.getCustomerNameByID(customerID));
