@@ -150,7 +150,7 @@ public class CustomerHomepage {
     public void searchCustomers(String searchQuery) throws SQLException {
         ObservableList<Customer> searchedCustomers = CustomerHelper.searchCustomers(searchQuery);
         if (searchedCustomers.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "No customer found with the given name.", ButtonType.OK);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "No customer found with the searched name.", ButtonType.OK);
             alert.showAndWait();
         }
         customerTable.setItems(searchedCustomers);

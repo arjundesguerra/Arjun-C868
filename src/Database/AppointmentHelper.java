@@ -74,6 +74,55 @@ public class AppointmentHelper {
 
     }
 
+    public static ObservableList<Appointment> fetchAppointmentsSearch(String searchTitle) throws SQLException {
+        ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
+
+        PreparedStatement statement = JDBC.getConnection().prepareStatement("SELECT * FROM appointments WHERE Title LIKE ?");
+        statement.setString(1, "%" + searchTitle + "%");
+
+        ResultSet resultSet = statement.executeQuery();
+
+        while (resultSet.next()) {
+            int appointmentID = resultSet.getInt("Appointment_ID");
+            String appointmentTitle = resultSet.getString("Title");
+            String appointmentDescription = resultSet.getString("Description");
+            String appointmentLocation = resultSet.getString("Location");
+            String appointmentType = resultSet.getString("Type");
+            LocalDateTime startDateTime = resultSet.getTimestamp("Start").toLocalDateTime();
+            LocalDateTime endDateTime = resultSet.getTimestamp("End").toLocalDateTime();
+            int customerID = resultSet.getInt("Customer_ID");
+            int userID = resultSet.getInt("User_ID");
+            int contactID = resultSet.getInt("Contact_ID");
+
+            Appointment appointment;
+
+            if (appointmentType.equals("Service Appointment")) {
+                PreparedStatement serviceStatement = JDBC.getConnection().prepareStatement("SELECT Service_Cost, Service_Type FROM service_appointments WHERE Appointment_ID = ?");
+                serviceStatement.setInt(1, appointmentID);
+                ResultSet serviceResult = serviceStatement.executeQuery();
+                if (serviceResult.next()) {
+                    double serviceCost = serviceResult.getDouble("Service_Cost");
+                    String serviceType = serviceResult.getString("Service_Type");
+                    appointment = new ServiceAppointment(appointmentID, appointmentTitle, appointmentDescription, appointmentLocation, appointmentType, serviceCost, serviceType, startDateTime, endDateTime, customerID, userID, contactID);
+                    appointmentList.add(appointment);
+                }
+            } else if (appointmentType.equals("Sales Appointment")) {
+                PreparedStatement salesStatement = JDBC.getConnection().prepareStatement("SELECT Vehicle, Financing_Option FROM sales_appointments WHERE Appointment_ID = ?");
+                salesStatement.setInt(1, appointmentID);
+                ResultSet salesResult = salesStatement.executeQuery();
+                if (salesResult.next()) {
+                    String vehicle = salesResult.getString("Vehicle");
+                    String financingOptions = salesResult.getString("Financing_Option");
+                    appointment = new SalesAppointment(appointmentID, appointmentTitle, appointmentDescription, appointmentLocation, appointmentType, vehicle, financingOptions, startDateTime, endDateTime, customerID, userID, contactID);
+                    appointmentList.add(appointment);
+                }
+            }
+        }
+
+        return appointmentList;
+
+    }
+
 
     /**
      * Retrieves all appointments for the current month from the database.
@@ -81,16 +130,18 @@ public class AppointmentHelper {
      * @return an observable list of appointments for the current month
      * @throws SQLException if there is an error retrieving data from the database
      */
-    public static ObservableList<Appointment> fetchAppointmentsByMonth() throws SQLException {
+    public static ObservableList<Appointment> fetchAppointmentsByMonth(String title) throws SQLException {
         ObservableList<Appointment> monthAppointmentList = FXCollections.observableArrayList();
 
         LocalDate currentDate = LocalDate.now();
         LocalDate endDate = LocalDate.of(currentDate.getYear(), currentDate.getMonth(), currentDate.lengthOfMonth());
         LocalDate startDate = currentDate.withDayOfMonth(1);
 
-        PreparedStatement statement = JDBC.getConnection().prepareStatement("SELECT * FROM appointments WHERE Start >= ? AND Start <= ?");
-        statement.setTimestamp(1, Timestamp.valueOf(startDate.atStartOfDay()));
-        statement.setTimestamp(2, Timestamp.valueOf(endDate.plusDays(1).atStartOfDay()));
+        PreparedStatement statement = JDBC.getConnection().prepareStatement(
+                "SELECT * FROM appointments WHERE (Title LIKE ?) AND (Start >= ? AND Start <= ?)");
+        statement.setString(1, "%" + title + "%");
+        statement.setTimestamp(2, Timestamp.valueOf(startDate.atStartOfDay()));
+        statement.setTimestamp(3, Timestamp.valueOf(endDate.plusDays(1).atStartOfDay()));
 
         ResultSet resultSet = statement.executeQuery();
 
@@ -140,16 +191,18 @@ public class AppointmentHelper {
      * @return an observable list of appointments for the current week
      * @throws SQLException if there is an error retrieving data from the database
      */
-    public static ObservableList<Appointment> fetchAppointmentsByWeek() throws SQLException {
+    public static ObservableList<Appointment> fetchAppointmentsByWeek(String title) throws SQLException {
         ObservableList<Appointment> weekAppointmentList = FXCollections.observableArrayList();
 
         LocalDate currentDate = LocalDate.now();
-        LocalDate endDate = currentDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).minusDays(1);
-        LocalDate startDate = currentDate;
+        LocalDate endDate = currentDate.with(TemporalAdjusters.next(DayOfWeek.SUNDAY));
+        LocalDate startDate = endDate.minusDays(6);
 
-        PreparedStatement statement = JDBC.getConnection().prepareStatement("SELECT * FROM appointments WHERE Start >= ? AND Start <= ?");
-        statement.setTimestamp(1, Timestamp.valueOf(startDate.atStartOfDay()));
-        statement.setTimestamp(2, Timestamp.valueOf(endDate.plusDays(1).atStartOfDay()));
+        PreparedStatement statement = JDBC.getConnection().prepareStatement(
+                "SELECT * FROM appointments WHERE (Title LIKE ?) AND (Start >= ? AND Start <= ?)");
+        statement.setString(1, "%" + title + "%");
+        statement.setTimestamp(2, Timestamp.valueOf(startDate.atStartOfDay()));
+        statement.setTimestamp(3, Timestamp.valueOf(endDate.plusDays(1).atStartOfDay()));
 
         ResultSet resultSet = statement.executeQuery();
 
@@ -308,6 +361,55 @@ public class AppointmentHelper {
 
         return appointmentList;
     }
+
+    public static ObservableList<Appointment> searchAppointment(String title) throws SQLException {
+        ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
+
+        PreparedStatement statement = JDBC.getConnection().prepareStatement("SELECT * FROM appointments WHERE Title LIKE ?");
+        statement.setString(1, "%" + title + "%");
+
+        ResultSet resultSet = statement.executeQuery();
+
+        while (resultSet.next()) {
+            int appointmentID = resultSet.getInt("Appointment_ID");
+            String appointmentTitle = resultSet.getString("Title");
+            String appointmentDescription = resultSet.getString("Description");
+            String appointmentLocation = resultSet.getString("Location");
+            String appointmentType = resultSet.getString("Type");
+            LocalDateTime startDateTime = resultSet.getTimestamp("Start").toLocalDateTime();
+            LocalDateTime endDateTime = resultSet.getTimestamp("End").toLocalDateTime();
+            int customerID = resultSet.getInt("Customer_ID");
+            int userID = resultSet.getInt("User_ID");
+            int contactID = resultSet.getInt("Contact_ID");
+
+            Appointment appointment;
+
+            if (appointmentType.equals("Service Appointment")) {
+                PreparedStatement serviceStatement = JDBC.getConnection().prepareStatement("SELECT Service_Cost, Service_Type FROM service_appointments WHERE Appointment_ID = ?");
+                serviceStatement.setInt(1, appointmentID);
+                ResultSet serviceResult = serviceStatement.executeQuery();
+                if (serviceResult.next()) {
+                    double serviceCost = serviceResult.getDouble("Service_Cost");
+                    String serviceType = serviceResult.getString("Service_Type");
+                    appointment = new ServiceAppointment(appointmentID, appointmentTitle, appointmentDescription, appointmentLocation, appointmentType, serviceCost, serviceType, startDateTime, endDateTime, customerID, userID, contactID);
+                    appointmentList.add(appointment);
+                }
+            } else if (appointmentType.equals("Sales Appointment")) {
+                PreparedStatement salesStatement = JDBC.getConnection().prepareStatement("SELECT Vehicle, Financing_Option FROM sales_appointments WHERE Appointment_ID = ?");
+                salesStatement.setInt(1, appointmentID);
+                ResultSet salesResult = salesStatement.executeQuery();
+                if (salesResult.next()) {
+                    String vehicle = salesResult.getString("Vehicle");
+                    String financingOptions = salesResult.getString("Financing_Option");
+                    appointment = new SalesAppointment(appointmentID, appointmentTitle, appointmentDescription, appointmentLocation, appointmentType, vehicle, financingOptions, startDateTime, endDateTime, customerID, userID, contactID);
+                    appointmentList.add(appointment);
+                }
+            }
+        }
+
+        return appointmentList;
+    }
+
 
     /**
      * Creates a new appointment in the database.

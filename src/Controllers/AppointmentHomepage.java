@@ -1,17 +1,21 @@
 package Controllers;
 
 import Database.AppointmentHelper;
+import Database.CustomerHelper;
 import Database.SalesAppointmentHelper;
 import Database.ServiceAppointmentHelper;
 import Models.Appointment;
+import Models.Customer;
 import Models.SalesAppointment;
 import Models.ServiceAppointment;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -62,7 +66,7 @@ public class AppointmentHomepage {
      */
     public void initialize() throws SQLException {
         // default
-        setAppointmentTableAll();
+        setAppointmentTableAll(appointmentSearch.getText());
 
         appointmentToggleGroup = new ToggleGroup();
         allRadioButton.setToggleGroup(appointmentToggleGroup);
@@ -71,25 +75,37 @@ public class AppointmentHomepage {
 
         allRadioButton.setOnAction(event -> {
             try {
-                setAppointmentTableAll();
+                setAppointmentTableAll(appointmentSearch.getText());
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
         monthRadioButton.setOnAction(event -> {
             try {
-                setAppointmentTableMonth();
+                setAppointmentTableMonth(appointmentSearch.getText());
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
         weekRadioButton.setOnAction(event -> {
             try {
-                setAppointmentTableWeek();
+                setAppointmentTableWeek(appointmentSearch.getText());
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
+
+        appointmentSearch.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                String searchQuery = appointmentSearch.getText();
+                try {
+                    searchAppointments(searchQuery);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
     }
 
 
@@ -196,8 +212,8 @@ public class AppointmentHomepage {
      *
      * @throws SQLException if there is an error retrieving data from the database.
      */
-    public void setAppointmentTableAll() throws SQLException {
-        appointmentTable.setItems(AppointmentHelper.fetchAppointments());
+    public void setAppointmentTableAll(String searchQuery) throws SQLException {
+        appointmentTable.setItems(AppointmentHelper.fetchAppointmentsSearch(searchQuery));
 
         appointmentIDColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentID"));
         appointmentTitleColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentTitle"));
@@ -216,8 +232,8 @@ public class AppointmentHomepage {
      *
      * @throws SQLException if there is an error retrieving data from the database.
      */
-    public void setAppointmentTableMonth() throws SQLException {
-        appointmentTable.setItems(AppointmentHelper.fetchAppointmentsByMonth());
+    public void setAppointmentTableMonth(String searchQuery) throws SQLException {
+        appointmentTable.setItems(AppointmentHelper.fetchAppointmentsByMonth(searchQuery));
 
         appointmentIDColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentID"));
         appointmentTitleColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentTitle"));
@@ -236,8 +252,8 @@ public class AppointmentHomepage {
      *
      * @throws SQLException if there is an error retrieving data from the database.
      */
-    public void setAppointmentTableWeek() throws SQLException {
-        appointmentTable.setItems(AppointmentHelper.fetchAppointmentsByWeek());
+    public void setAppointmentTableWeek(String searchQuery) throws SQLException {
+        appointmentTable.setItems(AppointmentHelper.fetchAppointmentsByWeek(searchQuery));
 
         appointmentIDColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentID"));
         appointmentTitleColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentTitle"));
@@ -249,6 +265,15 @@ public class AppointmentHomepage {
         appointmentCustomerID.setCellValueFactory(new PropertyValueFactory<>("customerID"));
         appointmentUserID.setCellValueFactory(new PropertyValueFactory<>("userID"));
         appointmentContactID.setCellValueFactory(new PropertyValueFactory<>("contactID"));
+    }
+
+    public void searchAppointments(String searchQuery) throws SQLException {
+        ObservableList<Appointment> searchedAppointments = AppointmentHelper.searchAppointment(searchQuery);
+        if (searchedAppointments.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "No appointment found with the searched title.", ButtonType.OK);
+            alert.showAndWait();
+        }
+        appointmentTable.setItems(searchedAppointments);
     }
 
     /**
