@@ -8,6 +8,10 @@ import Models.Appointment;
 import Models.Customer;
 import Models.SalesAppointment;
 import Models.ServiceAppointment;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,9 +21,11 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * The AppointmentHomepage class is responsible for displaying the list of appointments and their corresponding parts.
@@ -44,6 +50,10 @@ public class AppointmentHomepage {
     private TableColumn appointmentLocationColumn;
     @FXML
     private TableColumn appointmentTypeColumn;
+    @FXML
+    private TableColumn vehicleOrCostColumn;
+    @FXML
+    private TableColumn  financingOrServiceColumn;
     @FXML
     private TableColumn appointmentStartColumn;
     @FXML
@@ -225,7 +235,28 @@ public class AppointmentHomepage {
         appointmentCustomerID.setCellValueFactory(new PropertyValueFactory<>("customerID"));
         appointmentUserID.setCellValueFactory(new PropertyValueFactory<>("userID"));
         appointmentContactID.setCellValueFactory(new PropertyValueFactory<>("contactID"));
+
+        vehicleOrCostColumn.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Appointment, String>, ObservableValue<String>>) cellData -> {
+            Appointment appointment = cellData.getValue();
+            if (appointment instanceof SalesAppointment) {
+                return new SimpleStringProperty(((SalesAppointment) appointment).getVehicle());
+            } else if (appointment instanceof ServiceAppointment){
+                return new SimpleDoubleProperty(((ServiceAppointment) appointment).getServiceCost()).asString();
+            }
+            return null;
+        });
+
+        financingOrServiceColumn.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Appointment, String>, ObservableValue<String>>) cellData -> {
+            Appointment appointment = cellData.getValue();
+            if (appointment instanceof SalesAppointment) {
+                return new SimpleStringProperty(((SalesAppointment) appointment).getFinancingOptions());
+            } else if (appointment instanceof ServiceAppointment) {
+                return new SimpleStringProperty(((ServiceAppointment) appointment).getServiceType());
+            }
+            return null;
+        });
     }
+
 
     /**
      * Sets the appointment table to display appointments by month.
@@ -245,6 +276,26 @@ public class AppointmentHomepage {
         appointmentCustomerID.setCellValueFactory(new PropertyValueFactory<>("customerID"));
         appointmentUserID.setCellValueFactory(new PropertyValueFactory<>("userID"));
         appointmentContactID.setCellValueFactory(new PropertyValueFactory<>("contactID"));
+
+        vehicleOrCostColumn.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Appointment, String>, ObservableValue<String>>) cellData -> {
+            Appointment appointment = cellData.getValue();
+            if (appointment instanceof SalesAppointment) {
+                return new SimpleStringProperty(((SalesAppointment) appointment).getVehicle());
+            } else if (appointment instanceof ServiceAppointment){
+                return new SimpleDoubleProperty(((ServiceAppointment) appointment).getServiceCost()).asString();
+            }
+            return null;
+        });
+
+        financingOrServiceColumn.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Appointment, String>, ObservableValue<String>>) cellData -> {
+            Appointment appointment = cellData.getValue();
+            if (appointment instanceof SalesAppointment) {
+                return new SimpleStringProperty(((SalesAppointment) appointment).getFinancingOptions());
+            } else if (appointment instanceof ServiceAppointment) {
+                return new SimpleStringProperty(((ServiceAppointment) appointment).getServiceType());
+            }
+            return null;
+        });
     }
 
     /**
@@ -265,6 +316,26 @@ public class AppointmentHomepage {
         appointmentCustomerID.setCellValueFactory(new PropertyValueFactory<>("customerID"));
         appointmentUserID.setCellValueFactory(new PropertyValueFactory<>("userID"));
         appointmentContactID.setCellValueFactory(new PropertyValueFactory<>("contactID"));
+
+        vehicleOrCostColumn.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Appointment, String>, ObservableValue<String>>) cellData -> {
+            Appointment appointment = cellData.getValue();
+            if (appointment instanceof SalesAppointment) {
+                return new SimpleStringProperty(((SalesAppointment) appointment).getVehicle());
+            } else if (appointment instanceof ServiceAppointment){
+                return new SimpleDoubleProperty(((ServiceAppointment) appointment).getServiceCost()).asString();
+            }
+            return null;
+        });
+
+        financingOrServiceColumn.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Appointment, String>, ObservableValue<String>>) cellData -> {
+            Appointment appointment = cellData.getValue();
+            if (appointment instanceof SalesAppointment) {
+                return new SimpleStringProperty(((SalesAppointment) appointment).getFinancingOptions());
+            } else if (appointment instanceof ServiceAppointment) {
+                return new SimpleStringProperty(((ServiceAppointment) appointment).getServiceType());
+            }
+            return null;
+        });
     }
 
     public void searchAppointments(String searchQuery) throws SQLException {
