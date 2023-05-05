@@ -339,7 +339,15 @@ public class AppointmentHomepage {
     }
 
     public void searchAppointments(String searchQuery) throws SQLException {
-        ObservableList<Appointment> searchedAppointments = AppointmentHelper.searchAppointment(searchQuery);
+        ObservableList<Appointment> searchedAppointments = FXCollections.observableArrayList();
+        if (allRadioButton.isSelected()) {
+            searchedAppointments = AppointmentHelper.fetchAppointmentsSearch(searchQuery);
+        } else if (weekRadioButton.isSelected()) {
+            searchedAppointments = AppointmentHelper.fetchAppointmentsByWeek(searchQuery);
+        } else if (monthRadioButton.isSelected()) {
+            searchedAppointments = AppointmentHelper.fetchAppointmentsByMonth(searchQuery);
+        }
+
         if (searchedAppointments.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "No appointment found with the searched title.", ButtonType.OK);
             alert.showAndWait();
